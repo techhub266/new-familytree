@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.container{
+    display:flex;
+    width:600px;
+    height:250px;
+}
+
+.family1{
+    flex:1;
+    background:lightblue;
+    
+}
+
+.family2{
+    flex:1;
+    background:lightgreen;
+    
+}
+
+button{
+    display:block;
+    margin:10px 0;
+    padding:10px;
+    cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="family1">
+        <h3>Ammaammafamily</h3>
+
+        <button onclick="checkPassword('Varun', 'varun.html')">Varun</button>
+        <button onclick="checkPassword('Yamini', 'yamini.html')">Yamini</button>
+        <button onclick="checkPassword('Ravi', 'ravi.html')">Ravi</button>
+        <button onclick="checkPassword('Sai', 'sai.html')">sai</button>
+      
+        
+    </div>
+
+    <div class="family2">
+        <h3>Nannaammafamily</h3>
+
+        <button onclick="checkPassword('bhavana', 'bhavana.html')">Bhavana</button>
+        <button onclick="checkPassword('yogitha', 'yogitha.html')">Yogitha</button>
+        <button onclick="checkPassword('hema', 'hema.html')">Hema</button>
+        <button onclick="checkPassword('harshitha','harshitha.html')">Harshitha</button>
+       
+    </div>
+</div>
+
+<script>
+function checkPassword(name) {
+
+    let enteredPassword = prompt(
+        "Enter password for " + name
+    );
+
+    let correctPassword = name.length.toString();
+    let pageName = name.toLowerCase() + ".html";
+
+    if (enteredPassword === correctPassword) {
+        alert("✅ Login Successful");
+        window.location.href = pageName;
+    } else {
+        alert(
+            "❌ Wrong Password!\nCorrect password is the length of the name: "
+            + correctPassword
+        );
+    }
+}
+</script>
+
+</body>
+</html>
