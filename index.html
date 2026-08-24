@@ -1,79 +1,117 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-<style>
-.container{
-    display:flex;
-    width:600px;
-    height:250px;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-.family1{
-    flex:1;
-    background:lightblue;
-    
-}
+    <title>Family Tree</title>
 
-.family2{
-    flex:1;
-    background:lightgreen;
-    
-}
-
-button{
-    display:block;
-    margin:10px 0;
-    padding:10px;
-    cursor:pointer;
-}
-</style>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<div class="container">
-    <div class="family1">
-        <h3>Ammaammafamily</h3>
+    <h1>Family Tree</h1>
 
-        <button onclick="checkPassword('Varun', 'varun.html')">Varun</button>
-        <button onclick="checkPassword('Yamini', 'yamini.html')">Yamini</button>
-        <button onclick="checkPassword('Ravi', 'ravi.html')">Ravi</button>
-        <button onclick="checkPassword('Sai', 'sai.html')">sai</button>
-      
-        
+    <div class="controls">
+
+        <form id="member-form">
+
+            <input
+                type="text"
+                id="name"
+                placeholder="Name"
+                required
+            >
+
+            <select id="gender" required>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+
+            <select id="relation" required>
+                <option value="">Select Relationship</option>
+
+                <option value="Husband">
+                    Husband
+                </option>
+
+                <option value="Wife">
+                    Wife
+                </option>
+
+                <option value="Son">
+                    Son
+                </option>
+
+                <option value="Daughter">
+                    Daughter
+                </option>
+
+                <option value="Son-in-law">
+                    Son-in-law
+                </option>
+
+                <option value="Daughter-in-law">
+                    Daughter-in-law
+                </option>
+
+                <option value="Father">
+                    Father
+                </option>
+
+                <option value="Mother">
+                    Mother
+                </option>
+
+                <option value="Brother">
+                    Brother
+                </option>
+
+                <option value="Sister">
+                    Sister
+                </option>
+
+                <option value="Spouse">
+                    Spouse
+                </option>
+            </select>
+
+            <input
+                type="text"
+                id="dob"
+                placeholder="DOB / Details"
+            >
+
+            <select id="related-id">
+                <option value="">
+                    -- Select Related Person --
+                </option>
+            </select>
+
+            <button type="submit">
+                Add Member
+            </button>
+
+        </form>
+
+        <button id="clear-tree">
+            Clear Tree
+        </button>
+
     </div>
 
-    <div class="family2">
-        <h3>Nannaammafamily</h3>
 
-        <button onclick="checkPassword('bhavana', 'bhavana.html')">Bhavana</button>
-        <button onclick="checkPassword('yogitha', 'yogitha.html')">Yogitha</button>
-        <button onclick="checkPassword('hema', 'hema.html')">Hema</button>
-        <button onclick="checkPassword('harshitha','harshitha.html')">Harshitha</button>
-       
+    <div
+        class="tree"
+        id="tree-container">
     </div>
-</div>
 
-<script>
-function checkPassword(name) {
 
-    let enteredPassword = prompt(
-        "Enter password for " + name
-    );
-
-    let correctPassword = name.length.toString();
-    let pageName = name.toLowerCase() + ".html";
-
-    if (enteredPassword === correctPassword) {
-        alert("✅ Login Successful");
-        window.location.href = pageName;
-    } else {
-        alert(
-            "❌ Wrong Password!\nCorrect password is the length of the name: "
-            + correctPassword
-        );
-    }
-}
-</script>
+    <script src="script.js"></script>
 
 </body>
+
 </html>

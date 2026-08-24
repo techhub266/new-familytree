@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Tree Heritage & Genealogy</title>
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="logo-icon">
+                <i class="fa-solid fa-tree"></i>
+            </div>
+            <div>
+                <h1 class="app-title">Family Tree Explorer</h1>
+                <p class="app-subtitle">Powered by Python & SQLite Database</p>
+            </div>
+        </div>
+
+        <!-- Live Stats Dashboard -->
+        <div class="stats-bar" id="stats-bar">
+            <div class="stat-pill">
+                <i class="fa-solid fa-users"></i>
+                <span>Total: <strong id="stat-total">0</strong></span>
+            </div>
+            <div class="stat-pill male">
+                <i class="fa-solid fa-mars"></i>
+                <span>Males: <strong id="stat-males">0</strong></span>
+            </div>
+            <div class="stat-pill female">
+                <i class="fa-solid fa-venus"></i>
+                <span>Females: <strong id="stat-females">0</strong></span>
+            </div>
+            <div class="stat-pill in-law">
+                <i class="fa-solid fa-ring"></i>
+                <span>In-Laws: <strong id="stat-inlaws">0</strong></span>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button class="btn btn-primary" id="btn-open-add">
+                <i class="fa-solid fa-user-plus"></i> Add Member
+            </button>
+            <button class="btn btn-secondary" id="btn-sample-tree" title="Load sample 3-generation family">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Load Sample
+            </button>
+            <button class="btn btn-outline" id="btn-export" title="Export database as JSON">
+                <i class="fa-solid fa-download"></i> Backup
+            </button>
+            <button class="btn btn-danger-outline" id="btn-clear-tree" title="Clear all data">
+                <i class="fa-solid fa-trash-can"></i> Clear
+            </button>
+        </div>
+    </header>
+
+    <!-- Toolbar / Search & Zoom Controls -->
+    <div class="toolbar-container">
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="tree-search" placeholder="Search members by name, relation, or details...">
+            <button id="search-clear-btn" class="search-clear hidden">&times;</button>
+        </div>
+
+        <div class="zoom-controls">
+            <button class="zoom-btn" id="zoom-in" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
+            <button class="zoom-btn" id="zoom-reset" title="Reset Zoom">100%</button>
+            <button class="zoom-btn" id="zoom-out" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
+            <button class="zoom-btn" id="tree-center" title="Center Tree"><i class="fa-solid fa-arrows-to-dot"></i></button>
+        </div>
+    </div>
+
+    <!-- Tree Viewport Canvas -->
+    <main class="tree-viewport" id="tree-viewport">
+        <div class="tree-canvas" id="tree-container">
+            <!-- Dynamic tree rendered here -->
+        </div>
+    </main>
+
+    <!-- Add / Edit Member Modal -->
+    <div class="modal-overlay" id="member-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modal-title"><i class="fa-solid fa-user-plus"></i> Add Family Member</h3>
+                <button class="modal-close" id="modal-close-btn">&times;</button>
+            </div>
+            
+            <form id="member-form" class="modal-form">
+                <input type="hidden" id="edit-member-id" value="">
+
+                <div class="form-row">
+                    <div class="form-group flex-2">
+                        <label for="form-name">Full Name <span class="required">*</span></label>
+                        <input type="text" id="form-name" placeholder="e.g. Eleanor Vance" required>
+                    </div>
+
+                    <div class="form-group flex-1">
+                        <label for="form-gender">Gender <span class="required">*</span></label>
+                        <select id="form-gender" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label for="form-relation">Relationship <span class="required">*</span></label>
+                        <select id="form-relation" required>
+                            <option value="">-- Select Relationship --</option>
+                            <optgroup label="Spouses & In-Laws">
+                                <option value="Husband">Husband</option>
+                                <option value="Wife">Wife</option>
+                                <option value="Son-in-law">Son-in-law</option>
+                                <option value="Daughter-in-law">Daughter-in-law</option>
+                                <option value="Spouse">Spouse</option>
+                            </optgroup>
+                            <optgroup label="Children">
+                                <option value="Son">Son</option>
+                                <option value="Daughter">Daughter</option>
+                            </optgroup>
+                            <optgroup label="Parents & Elders">
+                                <option value="Father">Father</option>
+                                <option value="Mother">Mother</option>
+                            </optgroup>
+                            <optgroup label="Siblings">
+                                <option value="Brother">Brother</option>
+                                <option value="Sister">Sister</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="form-group flex-1">
+                        <label for="form-related-id">Related Person</label>
+                        <select id="form-related-id">
+                            <option value="">-- None (Root / Starting Member) --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label for="form-dob">Birth Date / Details</label>
+                        <input type="text" id="form-dob" placeholder="e.g. 1985-04-12 or 1985">
+                    </div>
+
+                    <div class="form-group flex-1">
+                        <label for="form-alive">Life Status</label>
+                        <select id="form-alive">
+                            <option value="1">Living</option>
+                            <option value="0">Deceased</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="form-bio">Bio / Notes / Profession</label>
+                    <textarea id="form-bio" rows="2" placeholder="e.g. Software architect, loved gardening and chess..."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="modal-save-btn">
+                        <i class="fa-solid fa-check"></i> Save to Database
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Member Details View Modal -->
+    <div class="modal-overlay" id="profile-modal">
+        <div class="modal-card profile-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-address-card"></i> Member Profile</h3>
+                <button class="modal-close" id="profile-close-btn">&times;</button>
+            </div>
+            <div class="profile-body" id="profile-body">
+                <!-- Dynamically injected -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Application Script -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
